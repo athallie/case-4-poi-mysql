@@ -52,6 +52,7 @@ map.addEventListener("click", (e) => {
     } else {
         updateMarkerPopup(e.latlng.lat, e.latlng.lng, true);
     }
+    map.setView([e.latlng.lat, e.latlng.lng], 19);
 })
 
 document.addEventListener("click", (e) => {
