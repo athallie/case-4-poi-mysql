@@ -1,3 +1,18 @@
 #map {
     height: 100%;
 }
+
+#poi-list {
+    top: 2%;
+    right: 1%;
+    width: 20%;
+    height: 40%;
+}
+
+#poi-title-row {
+    top: 0;
+}
+
+#poi-list-row {
+
+}
