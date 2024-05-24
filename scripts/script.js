@@ -42,8 +42,8 @@ map.addEventListener("click", (e) => {
             draggable: true
         }).addTo(map);
         mainMarker.isSet = true;
-        // updateMarkerPopup(e.latlng.lat, e.latlng.lng, false);
-        updateMarkerPopup(-7.2458381,112.7378687, false);
+        // updateMarkerPopup(-7.2458381, 112.7378687, false);
+        updateMarkerPopup(e.latlng.lat, e.latlng.lng, false);
 
         mainMarker.marker.addEventListener("dragend", (e) => {
             let latlng = e.target.getLatLng();
@@ -57,7 +57,6 @@ map.addEventListener("click", (e) => {
 document.addEventListener("click", (e) => {
     let element = e.target;
     if (element.id === "add-button") {
-        console.log("clicked")
         let data = {
             latitude: mainMarker.marker.getLatLng().lat,
             longitude: mainMarker.marker.getLatLng().lng,
@@ -65,7 +64,15 @@ document.addEventListener("click", (e) => {
             description: mainMarker.address,
             method: "create"
         }
-        console.log(data)
+
+        let addButton = document.querySelector("#add-button");
+        addButton.disabled = true;
+        addButton.textContent = "";
+
+        let spinner = document.createElement("span");
+        spinner.classList.add("spinner-border", "spinner-border-sm");
+        addButton.appendChild(spinner);
+
         fetch(
             `${getBaseUrl()}/public/entry.php`, {
                 method: "POST",
@@ -78,6 +85,11 @@ document.addEventListener("click", (e) => {
             data => data.text()
         ).then(
             data => {
+                setTimeout(() => {
+                    addButton.disabled = false;
+                    addButton.textContent = "Add";
+                }, 500)
+
                 console.log(data);
             }
         )
@@ -119,6 +131,7 @@ function updateMarkerPopup(lat, lng, setLatLng) {
         mainMarker.marker.setLatLng([lat, lng]);
     }
     clearTimeout(debounceTimeout);
+    mainMarker.marker.bindPopup(createLoaderPopUp()).openPopup();
     debounceTimeout = setTimeout(() => {
         reverseGeocoding(lat, lng).then(
             data => {
@@ -139,6 +152,15 @@ function getBaseUrl () {
         }
     }
     return url.origin;
+}
+
+function createLoaderPopUp() {
+    return L.popup({
+        closeButton: false,
+        autoClose: false,
+        closeOnEscapeKey: false,
+        className: 'loading-popup'
+    }).setContent('<div class="container-fluid h-100 d-flex justify-content-center align-items-center"><div id="popup-spinner" class="spinner-border" role="status"></div></div>');
 }
 
 /*Script ...*/
