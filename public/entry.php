@@ -7,5 +7,5 @@ $method = $data["method"];
 $controller = new Controller();
 
 if (method_exists($controller, $method)) {
-    $controller->create($data);
+    $controller->$method($data);
 }
