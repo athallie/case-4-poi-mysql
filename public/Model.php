@@ -23,11 +23,15 @@ class Model
     public function read()
     {
 
-    }
-    public function update()
+    public function update($latitude, $longitude, $name, $description)
     {
-
+        $update =
+            "UPDATE case_4.points SET latitude = '$latitude', longitude = '$longitude', name = '$name', description = '$description'" .
+            " WHERE latitude = '$latitude' AND longitude = '$longitude'";
+        $prepared = $this->db->prepare($update);
+        return $prepared->execute();
     }
+    
     public function delete()
     {
 
