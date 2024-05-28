@@ -1,5 +1,7 @@
 <?php
 
+require_once ('Model.php');
+
 class Controller
 {
     function create($data)
@@ -8,8 +10,6 @@ class Controller
         $longitude = $data["longitude"];
         $name = $data["name"];
         $description = $data["description"];
-
-        require_once ('Model.php');
 
         //Argumen constructor Model ini perlu disesuaikan dengan konfigurasi database lokal agar proses CRUD bisa berjalan
         $model = new Model("localhost", "root", "uxn265zc14", "case_4", 33060);
@@ -24,7 +24,7 @@ class Controller
         $name = $data["name"];
         $description = $data["description"];
 
-        require_once('Model.php');
+        //Argumen constructor Model ini perlu disesuaikan dengan konfigurasi database lokal agar proses CRUD bisa berjalan
         $model = new Model("localhost", "root", "uxn265zc14", "case_4", 33060);
         $status = $model->update($latitude, $longitude, $name, $description);
         echo $status ? "Data Updated" : "Failed to Update Data";

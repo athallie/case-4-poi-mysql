@@ -1,4 +1,5 @@
 <?php
+
 class Model
 {
     protected $db;
@@ -21,7 +22,7 @@ class Model
         return $prepared->execute();
     }
     public function read()
-    {
+    {}
 
     public function update($latitude, $longitude, $name, $description)
     {

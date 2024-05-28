@@ -22,20 +22,6 @@ if (!localStorage.getItem("geocodeCache")) {
     geocodeCache = JSON.parse(localStorage.getItem("geocodeCache"));
 }
 
-/*if (localStorage.getItem("mainMarker") === null) {
-    mainMarker = {
-        marker: null,
-        id: 301924,
-        isSet: false
-    };
-    localStorage.setItem("mainMarker", JSON.stringify(mainMarker));
-} else {
-    mainMarker = JSON.parse(localStorage.getItem("mainMarker"));
-    if (mainMarker.isSet === true) {
-        mainMarker.marker.addTo(map);
-    }
-}*/
-
 map.addEventListener("click", (e) => {
     if (mainMarker.isSet === false) {
         mainMarker.marker = L.marker([e.latlng.lat, e.latlng.lng], {
@@ -227,17 +213,5 @@ function updateMarkerAndDb(latitude, longitude, name, description) {
             
         }
     );
-}
-
-function getBaseUrl() {
-    let url = new URL(window.location.href);
-    let urlParts = url.pathname.split('/');
-    if (urlParts.length > 2) {
-        let projectRoot = urlParts[1];
-        if (projectRoot.trim() !== "") {
-            return url.origin + `/${projectRoot}`;
-        }
-    }
-    return url.origin;
 }
 /*Script ...*/
