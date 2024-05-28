@@ -4,6 +4,7 @@ require_once ('Model.php');
 
 class Controller
 {
+    /*Athallah*/
     function create($data)
     {
         $latitude = $data["latitude"];
@@ -16,7 +17,8 @@ class Controller
         $status = $model->create($latitude, $longitude, $name, $description);
         echo $status ? "Data Added" : "Failed to Add Data";
     }
-    
+
+    /*Fian*/
     function update($data)
     {
         $latitude = $data["latitude"];

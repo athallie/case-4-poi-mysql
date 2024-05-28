@@ -75,9 +75,10 @@ document.addEventListener("click", (e) => {
                 setTimeout(() => {
                     addButton.disabled = false;
                     addButton.textContent = "Add";
+                    setTimeout(() => {
+                        alert(data);
+                    }, 100)
                 }, 500)
-
-                console.log(data);
             }
         )
     }
