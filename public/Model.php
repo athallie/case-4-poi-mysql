@@ -24,10 +24,14 @@ class Model
     {
 
     }
-    public function update()
+    public function update($latitude, $longitude, $name, $description)
     {
-
+        $update = "UPDATE case_4.points SET name = ?, description = ? WHERE latitude = ? AND longitude = ?";
+        $prepared = $this->db->prepare($update);
+        $prepared->bind_param("ssdd", $name, $description, $latitude, $longitude);
+        return $prepared->execute();
     }
+    
     public function delete()
     {
 
