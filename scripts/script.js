@@ -1,4 +1,5 @@
 /*Script Athallah*/
+// let editModal = new bootstrap.Modal(document.querySelector("div#editModal"));
 let geocodeCache;
 let debounceTimeout;
 let mainMarker = {
@@ -231,47 +232,29 @@ function deletePoint(lat, lng, marker) {
         });
 }
 
-/*Script Fian*/
-document.addEventListener("DOMContentLoaded", function () {
-    
-    document.getElementById('editButton').addEventListener('click', function () {
-        
-        let latitude = document.getElementById('latitude').value;
-        let longitude = document.getElementById('longitude').value;
-        let name = document.getElementById('name').value;
-        let description = document.getElementById('description').value;
-        
-        updateMarkerAndDb(latitude, longitude, name, description);
-    });
-  
-    map.on('popupopen', function (e) {
-        let latlng = e.popup._latlng;
-        let content = e.popup._contentNode;
-        let data = JSON.parse(content.dataset.data);
+/*Update*/
+/*function showEditModal(data) {
+    document.querySelector("#latitude-input").value = data.latitude;
+    document.querySelector("#longitude-input").value = data.longitude;
+    document.querySelector("#name-input").value = data.name;
+    document.querySelector("#description-input").value = data.description;
+    editModal.show();
+}
 
-        document.getElementById('latitude').value = data.latitude;
-        document.getElementById('longitude').value = data.longitude;
-        document.getElementById('name').value = data.name;
-        document.getElementById('description').value = data.description;
+function closeEditModal() {
+    editModal.hide();
+}
 
-        $('#editModal').modal('show');
-    });
-});
-
-function updateMarkerAndDb(latitude, longitude, name, description) {
-   
-    if (mainMarker && mainMarker.marker) {
-        mainMarker.marker.setLatLng([latitude, longitude]);
-    }
-
+let editButton = document.querySelector("button#edit-button");
+editButton.addEventListener("click", () => {
+    closeEditModal();
     let data = {
-        latitude: latitude,
-        longitude: longitude,
-        name: name,
-        description: description,
+        latitude:     document.querySelector("#latitude-input").value,
+        longitude: document.querySelector("#longitude-input").value,
+        name: document.querySelector("#name-input").value,
+        description: document.querySelector("#description-input").value,
         method: "update"
     }
-   
     fetch(
         `${getBaseUrl()}/public/entry.php`, {
             method: "POST",
@@ -281,16 +264,64 @@ function updateMarkerAndDb(latitude, longitude, name, description) {
             body: JSON.stringify(data)
         }
     ).then(
-        response => response.json()
+        response => response.text()
     ).then(
-        responseData => {
-            console.log(responseData);
-            
-        }
-    ).catch(
-        error => {
-            console.error('Error:', error);
-            
+        data => {
+            console.log(data);
         }
     );
+})*/
+
+/*Script Fian => Dicomment karena merusak fungsi lainnya*/
+/*
+function activateUpdateMode(marker) {
+    let latitudeInput = document.getElementById('latitude-update');
+    let longitudeInput = document.getElementById('longitude-update');
+    let nameInput = document.getElementById('name-update');
+    let descriptionInput = document.getElementById('description-update');
+
+    latitudeInput.value = marker.getLatLng().lat;
+    longitudeInput.value = marker.getLatLng().lng;
+    nameInput.value = mainMarker.location;
+    descriptionInput.value = mainMarker.address;
+
+    $('#editModal').modal('show');
+
+    let updateButton = document.getElementById('editButton-update');
+    updateButton.addEventListener('click', function() {
+        let updatedData = {
+            id_poi: mainMarker.id,
+            latitude: parseFloat(latitudeInput.value),
+            longitude: parseFloat(longitudeInput.value),
+            name: nameInput.value,
+            description: descriptionInput.value,
+            method: "update"
+        };
+
+        fetch(`${getBaseUrl()}/public/entry.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedData)
+        }).then(response => response.text())
+            .then(data => {
+                console.log(data);
+
+                if (data === "Data Updated") {
+                    marker.setLatLng([updatedData.latitude, updatedData.longitude]);
+                    marker.bindPopup(createPopUpContent(updatedData.latitude, updatedData.longitude, updatedData.name, updatedData.description), { closeButton: false });
+                }
+            });
+    });
 }
+
+mainMarker.marker.on('dragend', function(e) {
+    activateUpdateMode(mainMarker.marker);
+});
+
+mainMarker.marker.on('click', function(e) {
+    activateUpdateMode(mainMarker.marker);
+});
+*/
+

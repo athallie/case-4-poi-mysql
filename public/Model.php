@@ -38,11 +38,22 @@ class Model
     /*Fian*/
     public function update($latitude, $longitude, $name, $description)
     {
-        $update =
-            "UPDATE case_4.points SET latitude = '$latitude', longitude = '$longitude', name = '$name', description = '$description'" .
-            " WHERE latitude = '$latitude' AND longitude = '$longitude'";
+        $update = "UPDATE case_4.points SET name = ?, description = ? WHERE latitude = ? AND longitude = ?";
         $prepared = $this->db->prepare($update);
-        return $prepared->execute();
+        if ($prepared) {
+            $prepared->bind_param("ssdd", $name, $description, $latitude, $longitude);
+            $result = $prepared->execute();
+            if ($result) {
+                return true;
+            } else {
+                error_log("Update failed: " . $this->db->error);
+                return false;
+            }
+            $prepared->close();
+        } else {
+            error_log("Prepared statement creation failed: " . $this->db->error);
+            return false;
+        }
     }
 
     /*Zahrina*/

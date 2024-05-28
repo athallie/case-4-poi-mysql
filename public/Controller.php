@@ -26,7 +26,7 @@ class Controller
         $name = $data["name"];
         $description = $data["description"];
 
-        //Argumen constructor Model ini perlu disesuaikan dengan konfigurasi database lokal agar proses CRUD bisa berjalan
+        // Argumen constructor Model ini perlu disesuaikan dengan konfigurasi database lokal agar proses CRUD bisa berjalan
         $model = new Model("localhost", "root", "uxn265zc14", "case_4", 33060);
         $status = $model->update($latitude, $longitude, $name, $description);
         echo $status ? "Data Updated" : "Failed to Update Data";
