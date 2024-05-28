@@ -9,3 +9,7 @@ $controller = new Controller();
 if (method_exists($controller, $method)) {
     $controller->create($data);
 }
+
+if (method_exists($controller, $method)) {
+    $controller->$method($data);
+}
