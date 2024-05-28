@@ -165,5 +165,79 @@ function createLoaderPopUp() {
 }
 
 /*Script ...*/
-/*Script ...*/
+/*Script Fian*/
+document.addEventListener("DOMContentLoaded", function () {
+    
+    document.getElementById('editButton').addEventListener('click', function () {
+        
+        let latitude = document.getElementById('latitude').value;
+        let longitude = document.getElementById('longitude').value;
+        let name = document.getElementById('name').value;
+        let description = document.getElementById('description').value;
+        
+        updateMarkerAndDb(latitude, longitude, name, description);
+    });
+  
+    map.on('popupopen', function (e) {
+        let latlng = e.popup._latlng;
+        let content = e.popup._contentNode;
+        let data = JSON.parse(content.dataset.data);
+
+        document.getElementById('latitude').value = data.latitude;
+        document.getElementById('longitude').value = data.longitude;
+        document.getElementById('name').value = data.name;
+        document.getElementById('description').value = data.description;
+
+        $('#editModal').modal('show');
+    });
+});
+
+function updateMarkerAndDb(latitude, longitude, name, description) {
+   
+    if (mainMarker && mainMarker.marker) {
+        mainMarker.marker.setLatLng([latitude, longitude]);
+    }
+
+    let data = {
+        latitude: latitude,
+        longitude: longitude,
+        name: name,
+        description: description,
+        method: "update"
+    }
+   
+    fetch(
+        `${getBaseUrl()}/public/entry.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+    ).then(
+        response => response.json()
+    ).then(
+        responseData => {
+            console.log(responseData);
+            
+        }
+    ).catch(
+        error => {
+            console.error('Error:', error);
+            
+        }
+    );
+}
+
+function getBaseUrl() {
+    let url = new URL(window.location.href);
+    let urlParts = url.pathname.split('/');
+    if (urlParts.length > 2) {
+        let projectRoot = urlParts[1];
+        if (projectRoot.trim() !== "") {
+            return url.origin + `/${projectRoot}`;
+        }
+    }
+    return url.origin;
+}
 /*Script ...*/
