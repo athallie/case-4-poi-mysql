@@ -8,11 +8,10 @@ class Model
         $this->db = new mysqli($hostname, $username, $password, $dbname, $port);
         if ($this->db->connect_error) {
             die("Connection failed: " . $this->db->connect_error);
-        } else {
-            echo "Connected successfully\n";
         }
     }
 
+    /*Athallah*/
     public function create($latitude, $longitude, $name, $description)
     {
         $insert =
@@ -21,9 +20,22 @@ class Model
         $prepared = $this->db->prepare($insert);
         return $prepared->execute();
     }
-    public function read()
-    {}
 
+    /*Adam*/
+    public function read()
+    {
+        $query = "SELECT * FROM case_4.points";
+        $result = $this->db->query($query);
+        $points = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $points[] = $row;
+            }
+        }
+        return json_encode($points);
+    }
+
+    /*Fian*/
     public function update($latitude, $longitude, $name, $description)
     {
         $update =
@@ -32,9 +44,12 @@ class Model
         $prepared = $this->db->prepare($update);
         return $prepared->execute();
     }
-    
-    public function delete()
-    {
 
+    /*Zahrina*/
+    public function delete($latitude, $longitude)
+    {
+        $delete = "DELETE FROM case_4.points WHERE latitude = '$latitude' AND longitude = '$longitude'";
+        $prepared = $this->db->prepare($delete);
+        return $prepared->execute();
     }
 }

@@ -31,4 +31,25 @@ class Controller
         $status = $model->update($latitude, $longitude, $name, $description);
         echo $status ? "Data Updated" : "Failed to Update Data";
     }
+
+    /*Adam*/
+    function read()
+    {
+        require_once ('Model.php');
+        $model = new Model("localhost", "root", "uxn265zc14", "case_4", 33060);
+        $points = $model->read();
+        echo $points;
+    }
+
+    /*Zahrina*/
+    function delete($data)
+    {
+        $latitude = $data["latitude"];
+        $longitude = $data["longitude"];
+
+        require_once ('Model.php');
+        $model = new Model("localhost", "root", "uxn265zc14", "case_4", 33060);
+        $status = $model->delete($latitude, $longitude);
+        echo $status ? "Data Deleted" : "Failed to Delete Data";
+    }
 }

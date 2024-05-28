@@ -9,7 +9,7 @@ let mainMarker = {
     address: null
 };
 
-let map = L.map('map').setView([-7.2458381, 112.7378687], 19);
+let map = L.map('map').setView([-7.2458381, 112.7378687], 17);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -28,7 +28,6 @@ map.addEventListener("click", (e) => {
             draggable: true
         }).addTo(map);
         mainMarker.isSet = true;
-        // updateMarkerPopup(-7.2458381, 112.7378687, false);
         updateMarkerPopup(e.latlng.lat, e.latlng.lng, false);
 
         mainMarker.marker.addEventListener("dragend", (e) => {
@@ -72,6 +71,7 @@ document.addEventListener("click", (e) => {
             data => data.text()
         ).then(
             data => {
+                fetchData();
                 setTimeout(() => {
                     addButton.disabled = false;
                     addButton.textContent = "Add";
@@ -151,7 +151,86 @@ function createLoaderPopUp() {
     }).setContent('<div class="container-fluid h-100 d-flex justify-content-center align-items-center"><div id="popup-spinner" class="spinner-border" role="status"></div></div>');
 }
 
-/*Script ...*/
+function createMarkers(points) {
+    points.forEach(point => {
+        let marker = L.marker([point.latitude, point.longitude], {draggable: true}).addTo(map);
+        marker.bindPopup(createPopUpContent(point.latitude, point.longitude, point.name, point.description), { closeButton: false });
+
+        marker.on('contextmenu', function () {
+            showDeleteModal(point.latitude, point.longitude, marker);
+        });
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchData();
+});
+
+function fetchData() {
+    fetch(
+        `${getBaseUrl()}/public/entry.php`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ method: "read" })
+        }
+    ).then(
+        response => response.json()
+    ).then(
+        data => {
+            createMarkers(data);
+        }
+    );
+}
+
+/* Zahrina Arij*/
+function showDeleteModal(lat, lng, marker) {
+    let modalContent = `
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Point</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this point?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalContent);
+    let deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+
+    document.getElementById('confirmDeleteButton').onclick = function() {
+        deletePoint(lat, lng, marker);
+        deleteModal.hide();
+    };
+}
+
+/*Function to delete point*/
+function deletePoint(lat, lng, marker) {
+    fetch(`${getBaseUrl()}/public/entry.php`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ method: "delete", latitude: lat, longitude: lng })
+    })
+        .then(response => response.text())
+        .then(result => {
+            console.log(result);
+            map.removeLayer(marker);
+        });
+}
+
 /*Script Fian*/
 document.addEventListener("DOMContentLoaded", function () {
     
@@ -215,4 +294,3 @@ function updateMarkerAndDb(latitude, longitude, name, description) {
         }
     );
 }
-/*Script ...*/
